@@ -14,5 +14,8 @@ gh repo create NextJS_Assignment_1 --private
 git remote add origin git@github.com:sudo-pro/NextJS_Assignment_1.git
 git push origin master
 
+npm i prisma @prisma/client next-auth
+
+
 
 ```

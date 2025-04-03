@@ -1,0 +1,39 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "./generated/prisma_client"
+}
+
+datasource db {
+    provider          = "postgresql"
+    url               = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    name      String
+    email     String   @unique
+    password  String
+    avatar    String
+
+    tasks Task[]
+}
+
+model Task {
+    id          String   @id @default(uuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    title       String
+    description String?
+    status      Status   @default(todo)
+
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String
+}
+
+enum Status {
+    todo
+    in_progress
+    done
+}
