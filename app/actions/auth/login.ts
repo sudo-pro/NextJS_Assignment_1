@@ -1,13 +1,13 @@
 "use server";
 
-import { signIn } from "next-auth/react";
-import { SignupFormState, LoginFormSchema } from "./schema";
+import bcrypt from "bcrypt";
 import { db } from "~/lib/db";
+import { AuthFormState, LoginFormSchema } from "./schema";
 
 export async function login(
-  state: SignupFormState,
+  _state: AuthFormState,
   formData: FormData
-): Promise<SignupFormState> {
+): Promise<AuthFormState> {
   try {
     const validatedFields = LoginFormSchema.safeParse({
       email: formData.get("email"),
@@ -25,6 +25,12 @@ export async function login(
       where: {
         email: email,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+      },
     });
 
     if (!user) {
@@ -35,14 +41,23 @@ export async function login(
       };
     }
 
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return {
+        errors: {
+          password: ["Invalid password."],
+        },
+      };
+    }
+
+    delete (user as { password?: string }).password;
 
     return {
-      success: "Wellcome back in AgriArena!",
+      success: "Wellcome back in TaskTracker!",
+      user: {
+        email: user.email,
+        password: password,
+      },
     };
   } catch (error) {
     console.log(error);

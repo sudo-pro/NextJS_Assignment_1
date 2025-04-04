@@ -1,14 +1,13 @@
 "use server";
 
 import bcrypt from "bcrypt";
-import { signIn } from "next-auth/react";
 import { db } from "~/lib/db";
-import { SignupFormState, SignupFormSchema } from "./schema";
+import { AuthFormState, SignupFormSchema } from "./schema";
 
 export async function signup(
-  state: SignupFormState,
+  _state: AuthFormState,
   formData: FormData
-): Promise<SignupFormState> {
+): Promise<AuthFormState> {
   const validatedFields = SignupFormSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -49,17 +48,18 @@ export async function signup(
         id: true,
       },
     });
-      
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+
+    console.log("User created:", user);
 
     return {
-      success: "Wellcome to AgriArena!",
+      success: "Wellcome to TaskTracker!",
+      user: {
+        email: email,
+        password: password,
+      },
     };
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error creating user:", error);
     return {
       error: "Something went wrong.",
     };

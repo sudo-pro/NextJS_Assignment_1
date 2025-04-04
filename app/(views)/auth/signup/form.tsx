@@ -8,6 +8,7 @@ import { signup } from "~/app/actions/auth/signup";
 import { redirect } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { signIn } from "next-auth/react";
 
 const inputField = `absolute left-0 top-1/2 transform -translate-y-1/2 text-base pointer-events-none transition-all peer-placeholder-shown:translate-y-0 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-xs peer-focus:-translate-y-full peer-valid:top-0 peer-valid:text-xs peer-valid:-translate-y-full`;
 
@@ -24,15 +25,31 @@ export function SignupForm() {
   };
 
   useEffect(() => {
+    const signInUser = async () => {
+      if (state?.user) {
+        const { email, password } = state.user;
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+        redirect(HOMEPAGE);
+      }
+    };
+    signInUser();
+  }, [state?.user]);
+
+  useEffect(() => {
     if (state?.error) {
       toast.error(state.error);
-      state.error = null;
+      state.error = undefined;
     } else if (state?.message) {
       toast.message(state.message);
-      state.message = null;
+      state.message = undefined;
     } else if (state?.success) {
       toast.success(state.success);
-      state.success = null;
+      state.success = undefined;
+
       redirect(HOMEPAGE);
     }
   }, [state?.error, state?.message, state?.success]);
@@ -48,7 +65,6 @@ export function SignupForm() {
           type="text"
           name="name"
           autoComplete="off"
-          required
           className="w-full h-10 bg-transparent border-none outline-none peer"
         />
         <label className={clsx(inputField)}>Enter your name</label>
@@ -62,7 +78,6 @@ export function SignupForm() {
           type="text"
           name="email"
           autoComplete="off"
-          required
           className="w-full h-10 bg-transparent border-none outline-none text-base peer"
         />
         <label className={clsx(inputField)}>Enter your email</label>
@@ -77,7 +92,6 @@ export function SignupForm() {
           id="password"
           name="password"
           autoComplete="off"
-          required
           value={password}
           onChange={handlePasswordChange}
           className="w-full h-10 bg-transparent border-none outline-none text-base peer"
@@ -107,7 +121,7 @@ export function SignupForm() {
         <p>
           Already have an account!!{" "}
           <Link
-            href="/login"
+            href="/auth/login"
             className="border-x border-blue-600 rounded-full px-2 py-1  underline underline-offset-2 hover:text-lime-400 hover:border-yellow-400"
           >
             Login

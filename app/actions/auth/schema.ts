@@ -25,15 +25,20 @@ export const LoginFormSchema = z.object({
     .min(1, { message: "Password field must not be empty." }),
 });
 
-export type SignupFormState =
+export type AuthFormState =
   | {
+      success?: string | null;
+      error?: string | null;
+      message?: string | null;
+      redirectTo?: string | null;
       errors?: {
         name?: string[];
         email?: string[];
         password?: string[];
       };
-      error?: string;
-      message?: string;
-      success?: string;
+      user?: {
+        email: string;
+        password: string;
+      };
     }
   | undefined;

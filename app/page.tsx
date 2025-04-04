@@ -1,7 +1,11 @@
-export default function Home() {
-  return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
-}
+import { Metadata } from "next";
+import { WelcomeMessage } from "~/components/WelcomeScreen";
+
+export const metadata: Metadata = {
+  title: "Home",
+};
+
+export default async () => {
+  return <WelcomeMessage />;
+};
+
