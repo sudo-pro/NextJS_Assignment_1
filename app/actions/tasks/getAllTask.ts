@@ -20,6 +20,9 @@ export const getAllTask = async (): Promise<TaskType[]> => {
         description: true,
         status: true,
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
     });
     if (!data) {
       return [];

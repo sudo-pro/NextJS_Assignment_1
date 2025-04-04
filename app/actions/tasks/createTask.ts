@@ -5,8 +5,8 @@ import { TaskFormSchema, TaskFormState } from "./schema";
 import { getUser } from "../auth/getUser";
 
 export const createTask = async (
-  state: TaskFormState,
-  formData: FormData
+  _state: TaskFormState,
+  formData: FormData,
 ): Promise<TaskFormState> => {
   try {
     const title = formData.get("title")?.toString() || "";
@@ -32,7 +32,7 @@ export const createTask = async (
       };
     }
 
-    await db.task.create({
+    const task = await db.task.create({
       data: {
         userId: user?.id,
         title: validatedFields.data.title,
@@ -49,6 +49,7 @@ export const createTask = async (
 
     return {
       success: "Task created successfully!",
+      task,
     };
   } catch (error) {
     console.error("Error creating task:", error);

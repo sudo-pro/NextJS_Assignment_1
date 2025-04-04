@@ -41,4 +41,5 @@ yarn-error.log*
 *.tsbuildinfo
 generated
 migrate
-migration
+migrations
+next-env.d.ts

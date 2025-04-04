@@ -1,23 +1,25 @@
+"use client";
+
 import { redirect } from "next/navigation";
 import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
 import { toast } from "sonner";
 
 export function useFormAction<State extends FormState>(
-  formAction: (state: Awaited<State>) => State | Promise<State>,
+  formAction: (state: Awaited<State>, formData: FormData) => Promise<State>,
   editMode?: Dispatch<SetStateAction<boolean>>,
-  isRedirect: boolean = true
+  isRedirect: boolean = true,
 ): [state: Awaited<State>, dispatch: () => void, next: string] {
-  const [state, action, isPending] = useActionState(
+  const [state, action] = useActionState(
     formAction as (state: Awaited<State>) => State | Promise<State>,
-    undefined as Awaited<State>
+    undefined as Awaited<State>,
   );
 
   useEffect(() => {
     if (state?.success) {
       toast.success(state.success);
       state.success = null;
-      if (isRedirect && state?.next) {
-        redirect(state.next);
+      if (isRedirect && state?.redirectTo) {
+        redirect(state.redirectTo);
       }
       if (editMode) {
         editMode(false);
@@ -27,16 +29,13 @@ export function useFormAction<State extends FormState>(
       state.message = null;
     } else if (state?.error) {
       toast.error(state.error);
-      if (editMode) {
-        editMode(false);
-      }
       state.error = null;
     }
   }, [state]);
 
-  return [state, action, state?.next || ""] as [
+  return [state, action, state?.redirectTo || ""] as [
     Awaited<State>,
     () => void,
-    string
+    string,
   ];
 }

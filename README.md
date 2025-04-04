@@ -1,5 +1,63 @@
 ## NextJS Assignment 1
 
+### Project Setup
+
+- Prerequisite:
+  - Node.js
+  - npm
+  - git
+
+#### Setp 1
+
+```sh
+git clone  https://github.com/sudo-pro/NextJS_Assignment_1
+cd NextJS_Assignment_1
+```
+
+#### Step 2
+
+Setup enviroment variables with proper manually created database credentials
+
+```sh
+cp .env.example .env
+
+```
+
+#### Step 3
+
+After setup environment, and proper database setup
+You need to migrate database schema for development purpose
+
+```sh
+npm run db:migrate
+
+```
+
+#### Step 4
+
+Install dependencies
+
+```sh
+npm install
+
+```
+
+#### Step 5
+
+- Option 1: Run with development server
+
+```sh
+npm run dev
+
+```
+
+- Option 2: Run with production server
+
+```sh
+npm run build
+npm start
+```
+
 ### Assignment Workflow
 
 ```sh
@@ -14,8 +72,7 @@ gh repo create NextJS_Assignment_1 --private
 git remote add origin git@github.com:sudo-pro/NextJS_Assignment_1.git
 git push origin master
 
-npm i prisma @prisma/client next-auth
-
-
+npm i prisma @prisma/client next-auth bycrypt
+npm i zod sonner clsx
 
 ```

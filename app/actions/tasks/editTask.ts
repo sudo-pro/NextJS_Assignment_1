@@ -5,12 +5,16 @@ import { TaskFormSchema, TaskFormState } from "./schema";
 import { getUser } from "../auth/getUser";
 
 export const editTask = async (
-  state: TaskFormState,
-  formData: FormData
+  _state: TaskFormState,
+  formData: FormData,
 ): Promise<TaskFormState> => {
   try {
+    const taskId = formData.get("id");
+    if (!taskId) {
+      throw new Error("Task ID is required");
+    }
+
     const validatedFields = TaskFormSchema.safeParse({
-      id: formData.get("id"),
       title: formData.get("title"),
       description: formData.get("description"),
       status: formData.get("status"),
@@ -29,10 +33,10 @@ export const editTask = async (
       };
     }
 
-    const { id, title, description, status } = validatedFields.data;
+    const { title, description, status } = validatedFields.data;
 
     const task = await db.task.update({
-      where: { id: id, userId: user.id },
+      where: { id: taskId as string, userId: user.id },
       data: {
         title,
         description,
@@ -48,10 +52,11 @@ export const editTask = async (
 
     return {
       success: "Task updated successfully!",
+      redirectTo: "/dashboard",
       task,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       error: "Something went wrong!",
     };

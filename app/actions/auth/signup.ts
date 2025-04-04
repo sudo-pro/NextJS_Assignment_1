@@ -6,7 +6,7 @@ import { AuthFormState, SignupFormSchema } from "./schema";
 
 export async function signup(
   _state: AuthFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AuthFormState> {
   const validatedFields = SignupFormSchema.safeParse({
     name: formData.get("name"),
@@ -38,7 +38,7 @@ export async function signup(
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await db.user.create({
+    await db.user.create({
       data: {
         name: name,
         email: email,
@@ -49,8 +49,6 @@ export async function signup(
       },
     });
 
-    console.log("User created:", user);
-
     return {
       success: "Wellcome to TaskTracker!",
       user: {
@@ -59,7 +57,7 @@ export async function signup(
       },
     };
   } catch (error: any) {
-    console.error("Error creating user:", error);
+    console.error(error);
     return {
       error: "Something went wrong.",
     };

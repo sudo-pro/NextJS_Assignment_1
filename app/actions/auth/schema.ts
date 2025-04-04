@@ -4,7 +4,8 @@ export const SignupFormSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, { message: "Name must be at least 2 characters long." }),
+    .min(2, { message: "Be at least 2 characters long." })
+    .max(20, { message: "Be at most 20 characters long." }),
   email: z.string().trim().email({ message: "Please enter a valid email." }),
   password: z
     .string()
@@ -25,20 +26,14 @@ export const LoginFormSchema = z.object({
     .min(1, { message: "Password field must not be empty." }),
 });
 
-export type AuthFormState =
-  | {
-      success?: string | null;
-      error?: string | null;
-      message?: string | null;
-      redirectTo?: string | null;
-      errors?: {
-        name?: string[];
-        email?: string[];
-        password?: string[];
-      };
-      user?: {
-        email: string;
-        password: string;
-      };
-    }
-  | undefined;
+export type AuthFormState = FormState & {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+  };
+  user?: {
+    email: string;
+    password: string;
+  };
+};

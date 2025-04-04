@@ -1,28 +1,20 @@
 "use server";
 
 import { db } from "~/lib/db";
-import { TaskFormState } from "./schema";
 import { getUser } from "../auth/getUser";
 
-export const deleteTask = async (
-  state: TaskFormState,
-  formData: FormData
-): Promise<TaskFormState> => {
+export const deleteTask = async (taskId: string): Promise<boolean> => {
   try {
-    const taskId = formData.get("id")?.toString() || "";
-    const user = await getUser()
+    const user = await getUser();
+    if (!user || !user?.id) return false;
 
     await db.task.delete({
-      where: { id: taskId },
+      where: { id: taskId, userId: user.id },
     });
-    
-    return {
-      success: "Task deleted successfully!",
-    };
+
+    return true;
   } catch (error) {
     console.error(error);
-    return {
-      error: "Something went wrong while deleting the task.",
-    };
+    return false;
   }
 };

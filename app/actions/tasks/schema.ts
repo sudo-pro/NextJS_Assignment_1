@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const TaskFormSchema = z.object({
-  id: z.string().nonempty({ message: "Task ID is required." }),
   title: z
     .string()
     .trim()

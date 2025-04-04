@@ -1,23 +1,23 @@
 "use client";
 
-import React, { useActionState, useEffect, useState } from "react";
-import { toast } from "sonner";
+import React, { useEffect, useState } from "react";
 import { createTask } from "~/app/actions/tasks/createTask";
+import { TaskType } from "~/app/actions/tasks/schema";
+import { useFormAction } from "~/lib/hooks/useFormAction";
 
-export const TaskFormModal: React.FC = () => {
+export const CreateTaskForm = ({
+  addTask,
+}: {
+  addTask: (newTask: TaskType) => void;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, createTaskAction] = useActionState(createTask, undefined);
+  const [state, createTaskAction] = useFormAction(createTask, setIsOpen);
 
   useEffect(() => {
-    if (state?.error) {
-      toast.error(state.error);
-      state.error = undefined;
-    } else if (state?.success) {
-      toast.success(state.success);
-      state.success = undefined;
-      setIsOpen(false);
+    if (state?.task) {
+      addTask(state.task);
     }
-  }, [state?.error, state?.message, state?.success]);
+  }, [state?.task]);
 
   return (
     <div>
@@ -70,6 +70,9 @@ export const TaskFormModal: React.FC = () => {
                             focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter task title"
                 />
+                {state?.errors?.title && (
+                  <p className="text-sm text-red-800">{state.errors.title}</p>
+                )}
               </div>
 
               <div className="mb-6">
@@ -88,6 +91,11 @@ export const TaskFormModal: React.FC = () => {
                   placeholder="Enter task description"
                   rows={4}
                 />
+                {state?.errors?.description && (
+                  <p className="text-sm text-red-800">
+                    {state.errors.description}
+                  </p>
+                )}
               </div>
 
               {/* Submit Button */}

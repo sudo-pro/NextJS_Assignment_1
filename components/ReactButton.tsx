@@ -15,5 +15,5 @@ export const ReactButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {pending ? onAction : onStatic}
       </button>
     );
-  }
+  },
 );

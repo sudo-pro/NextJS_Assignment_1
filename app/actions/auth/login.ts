@@ -6,7 +6,7 @@ import { AuthFormState, LoginFormSchema } from "./schema";
 
 export async function login(
   _state: AuthFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AuthFormState> {
   try {
     const validatedFields = LoginFormSchema.safeParse({
@@ -60,7 +60,7 @@ export async function login(
       },
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       error: "Something went wrong!",
     };
