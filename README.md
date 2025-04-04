@@ -25,20 +25,21 @@ cp .env.example .env
 
 #### Step 3
 
-After setup environment, and proper database setup
-You need to migrate database schema for development purpose
+Install dependencies
 
 ```sh
-npm run db:migrate
+npm install
 
 ```
 
 #### Step 4
 
-Install dependencies
+After setup environment, and proper database setup,
+You need to migrate database schema for development purpose,
+if found any error, you can refer to [prisma docs](https://www.prisma.io/docs/orm/prisma-migrate/getting-started).
 
 ```sh
-npm install
+npm run db:migrate
 
 ```
 
